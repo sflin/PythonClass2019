@@ -67,6 +67,17 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
                                                                     start_date=min(demographics.JoinDate),
                                                                     end_date=max(demographics.JoinDate)
                                                                     )
+                                                            ),
+                                                    html.H6('Birthdate'),
+                                                    html.P(
+                                                            dcc.DatePickerRange(
+                                                                    id='birthdate-picker-range',
+                                                                    min_date_allowed=min(demographics.Birthdate),
+                                                                    max_date_allowed=max(demographics.Birthdate),
+                                                                    initial_visible_month=dt(1989, 11, 9),
+                                                                    start_date=min(demographics.Birthdate),
+                                                                    end_date=max(demographics.Birthdate)
+                                                                    )
                                                             )
                                                     ])
                                             ],
@@ -96,15 +107,17 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
 @app.callback(
     dash.dependencies.Output('CustomerMap', 'figure'),
     [dash.dependencies.Input('gender-picker', 'values'),
-     dash.dependencies.Input('state-picker', 'value'),
      dash.dependencies.Input('date-picker-range', 'start_date'),
-     dash.dependencies.Input('date-picker-range', 'end_date')])
+     dash.dependencies.Input('date-picker-range', 'end_date'),
+     dash.dependencies.Input('birthdate-picker-range', 'start_date'),
+     dash.dependencies.Input('birthdate-picker-range', 'end_date')])
 
-def update_figure(selected_gender, selected_state, join_start_date, join_end_date):    
-     filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &  
-                                    (demographics['zip_state'].isin(selected_state)) &
-                                  (demographics['JoinDate'] >= join_start_date) &
-                                  (demographics['JoinDate'] <= join_end_date) ,]
+def update_figure(selected_gender, join_start_date, join_end_date, birthday_start_date, birthday_end_date):
+     filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &
+                                    (demographics['JoinDate'] >= join_start_date) &
+                                    (demographics['JoinDate'] <= join_end_date) &
+                                    (demographics['Birthdate'] >= birthday_start_date) &
+                                    (demographics['Birthdate'] <= birthday_end_date)]
     
      zip_size = filtered_df.groupby(["zip_city", 'zip_longitude', 'zip_latitude']).size()
     
@@ -137,15 +150,17 @@ def update_figure(selected_gender, selected_state, join_start_date, join_end_dat
 @app.callback(
     dash.dependencies.Output('table', 'data'),
     [dash.dependencies.Input('gender-picker', 'values'),
-     dash.dependencies.Input('state-picker', 'value'),
      dash.dependencies.Input('date-picker-range', 'start_date'),
-     dash.dependencies.Input('date-picker-range', 'end_date')])
+     dash.dependencies.Input('date-picker-range', 'end_date'),
+     dash.dependencies.Input('birthdate-picker-range', 'start_date'),
+     dash.dependencies.Input('birthdate-picker-range', 'end_date')])
 
-def update_table(selected_gender, selected_state, join_start_date, join_end_date):    
+def update_table(selected_gender, join_start_date, join_end_date, birthday_start_date, birthday_end_date):
     filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &  
-                                   (demographics['zip_state'].isin(selected_state)) &
-                                  (demographics['JoinDate'] >= join_start_date) &
-                                  (demographics['JoinDate'] <= join_end_date), ]
+                                    (demographics['JoinDate'] >= join_start_date) &
+                                    (demographics['JoinDate'] <= join_end_date) &
+                                    (demographics['Birthdate'] >= birthday_start_date) &
+                                    (demographics['Birthdate'] <= birthday_end_date)]
     return filtered_df.to_dict("rows")
 
 if __name__ == '__main__':
