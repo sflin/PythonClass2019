@@ -84,10 +84,10 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
 @app.callback(
     dash.dependencies.Output('CustomerMap', 'figure'),
     [dash.dependencies.Input('gender-picker', 'values'),
-     dash.dependencies.Input('date-picker-range', 'join_start_date'),
-     dash.dependencies.Input('date-picker-range', 'join_end_date')])
+     dash.dependencies.Input('date-picker-range', 'start_date'),
+     dash.dependencies.Input('date-picker-range', 'end_date')])
 
-def update_figure(selected_gender, start_date, end_date):    
+def update_figure(selected_gender, join_start_date, join_end_date):
      filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &  
                                   (demographics['JoinDate'] >= join_start_date) &
                                   (demographics['JoinDate'] <= join_end_date) ,]
@@ -124,10 +124,10 @@ def update_figure(selected_gender, start_date, end_date):
 @app.callback(
     dash.dependencies.Output('table', 'data'),
     [dash.dependencies.Input('gender-picker', 'values'),
-     dash.dependencies.Input('date-picker-range', 'join_start_date'),
-     dash.dependencies.Input('date-picker-range', 'join_end_date')])
+     dash.dependencies.Input('date-picker-range', 'start_date'),
+     dash.dependencies.Input('date-picker-range', 'end_date')])
 
-def update_table(selected_gender, start_date, end_date):    
+def update_table(selected_gender, join_start_date, join_end_date):
     filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &  
                                   (demographics['JoinDate'] >= join_start_date) &
                                   (demographics['JoinDate'] <= join_end_date), ]
