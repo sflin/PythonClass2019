@@ -12,8 +12,6 @@ import dash_html_components as html
 from datetime import datetime as dt
 import dash_table
 
-#os.chdir('C:/Users/patri/Dropbox/Python Advanced - Slides & Code/data')
-
 demographics = pd.read_csv('data/demographics.csv')
 demographics["Birthdate"] = pd.to_datetime(demographics["Birthdate"],
                                             format="%d.%m.%Y",
@@ -29,7 +27,9 @@ gender_options = []
 for gender in demographics['Gender'].unique():
     gender_options.append({'label':str(gender),
                            'value':gender})
+    
 
+state_options = []
 states = demographics['zip_state'].unique()
 states.sort()
 for s in states:
@@ -46,9 +46,17 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
                                                    html.P(
                                                            dcc.Checklist(id='gender-picker',
                                                                          options=gender_options,
+                                                                         
                                                                          values=['m','f','alien']
                                                                          )
                                                            ),
+                                                    html.H6('State'),
+                                                    html.P(
+                                                            dcc.Dropdown(id='state-picker',
+                                                                          options=state_options,
+                                                                          multi=True,
+                                                                          value=state_options[0])
+                                                            ),
                                                     html.H6('Join Date'),
                                                     html.P(
                                                             dcc.DatePickerRange(
