@@ -112,8 +112,9 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
      dash.dependencies.Input('birthdate-picker-range', 'start_date'),
      dash.dependencies.Input('birthdate-picker-range', 'end_date')])
 
-def update_figure(selected_gender, join_start_date, join_end_date, birthday_start_date, birthday_end_date):
+def update_figure(selected_gender, selected_state, join_start_date, join_end_date, birthday_start_date, birthday_end_date):
      filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &
+                                    (demographics['zip_state'].isin(selected_state)) &
                                     (demographics['JoinDate'] >= join_start_date) &
                                     (demographics['JoinDate'] <= join_end_date) &
                                     (demographics['Birthdate'] >= birthday_start_date) &
@@ -158,13 +159,15 @@ def update_figure(selected_gender, join_start_date, join_end_date, birthday_star
 @app.callback(
     dash.dependencies.Output('table', 'data'),
     [dash.dependencies.Input('gender-picker', 'values'),
+     dash.dependencies.Input('state-picker', 'value'),
      dash.dependencies.Input('date-picker-range', 'start_date'),
      dash.dependencies.Input('date-picker-range', 'end_date'),
      dash.dependencies.Input('birthdate-picker-range', 'start_date'),
      dash.dependencies.Input('birthdate-picker-range', 'end_date')])
 
-def update_table(selected_gender, join_start_date, join_end_date, birthday_start_date, birthday_end_date):
-    filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &  
+def update_table(selected_gender, selected_state, join_start_date, join_end_date, birthday_start_date, birthday_end_date):
+    filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) & 
+                                   (demographics['zip_state'].isin(selected_state)) &
                                     (demographics['JoinDate'] >= join_start_date) &
                                     (demographics['JoinDate'] <= join_end_date) &
                                     (demographics['Birthdate'] >= birthday_start_date) &
