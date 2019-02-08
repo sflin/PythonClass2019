@@ -29,8 +29,12 @@ gender_options = []
 for gender in demographics['Gender'].unique():
     gender_options.append({'label':str(gender),
                            'value':gender})
+    
 
-
+state_options = []
+for state in demographics['zip_state'].unique():
+    state_options.append({'label':str(state),
+                           'value':state})
 app = dash.Dash()
 
 #Add the CSS Stylesheet
@@ -42,9 +46,17 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
                                                    html.P(
                                                            dcc.Checklist(id='gender-picker',
                                                                          options=gender_options,
+                                                                         
                                                                          values=['m','f','alien']
                                                                          )
                                                            ),
+                                                    html.H6('State'),
+                                                    html.P(
+                                                            dcc.Dropdown(id='state-picker',
+                                                                          options=state_options,
+                                                                          multi=True,
+                                                                          value=state_options[0])
+                                                            ),
                                                     html.H6('Join Date'),
                                                     html.P(
                                                             dcc.DatePickerRange(
@@ -84,16 +96,17 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
 @app.callback(
     dash.dependencies.Output('CustomerMap', 'figure'),
     [dash.dependencies.Input('gender-picker', 'values'),
-     dash.dependencies.Input('date-picker-range', 'join_start_date'),
-     dash.dependencies.Input('date-picker-range', 'join_end_date')])
+     dash.dependencies.Input('state-picker', 'value'),
+     dash.dependencies.Input('date-picker-range', 'start_date'),
+     dash.dependencies.Input('date-picker-range', 'end_date')])
 
-def update_figure(selected_gender, start_date, end_date):    
+def update_figure(selected_gender, selected_state, join_start_date, join_end_date):    
      filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &  
+                                    (demographics['zip_state'].isin(selected_state)) &
                                   (demographics['JoinDate'] >= join_start_date) &
                                   (demographics['JoinDate'] <= join_end_date) ,]
-     zip_size = demographics.groupby(["zip_city"]).size()
     
-     zip_size = demographics.groupby(["zip_city", 'zip_longitude', 'zip_latitude']).size()
+     zip_size = filtered_df.groupby(["zip_city", 'zip_longitude', 'zip_latitude']).size()
     
      zipcity = zip_size.index.get_level_values("zip_city").tolist() 
      customerCount = zip_size.values.tolist()
@@ -124,11 +137,13 @@ def update_figure(selected_gender, start_date, end_date):
 @app.callback(
     dash.dependencies.Output('table', 'data'),
     [dash.dependencies.Input('gender-picker', 'values'),
-     dash.dependencies.Input('date-picker-range', 'join_start_date'),
-     dash.dependencies.Input('date-picker-range', 'join_end_date')])
+     dash.dependencies.Input('state-picker', 'value'),
+     dash.dependencies.Input('date-picker-range', 'start_date'),
+     dash.dependencies.Input('date-picker-range', 'end_date')])
 
-def update_table(selected_gender, start_date, end_date):    
+def update_table(selected_gender, selected_state, join_start_date, join_end_date):    
     filtered_df = demographics.loc[(demographics['Gender'].isin(selected_gender)) &  
+                                   (demographics['zip_state'].isin(selected_state)) &
                                   (demographics['JoinDate'] >= join_start_date) &
                                   (demographics['JoinDate'] <= join_end_date), ]
     return filtered_df.to_dict("rows")
