@@ -30,7 +30,11 @@ for gender in demographics['Gender'].unique():
     gender_options.append({'label':str(gender),
                            'value':gender})
 
-
+states = demographics['zip_state'].unique()
+states.sort()
+for s in states:
+    state_options.append({'label':str(s),
+                           'value':s})
 app = dash.Dash()
 
 #Add the CSS Stylesheet
@@ -116,7 +120,6 @@ def update_figure(selected_gender, join_start_date, join_end_date, birthday_star
      for i in range(len(customerCount)):
           k = str(zipcity[i]) + ':' + str(customerCount[i])
           hovertext.append(k)    #only the updated arguments are returned to the figure object, not a figure object itself.
-     
      return {'data':[dict(
                         type = 'scattergeo',
                         locationmode = 'USA-states',
@@ -130,8 +133,17 @@ def update_figure(selected_gender, join_start_date, join_end_date, birthday_star
                         sizemode = 'area'
                         )
                         )
-                    ]
-            }
+                   ],
+            'layout': dict(
+                      geo = dict(
+                                scope='usa',
+                                showland = True,
+                                landcolor = 'rgb(217, 217, 217)',
+                                subunitwidth=1,
+                                subunitcolor="rgb(255, 255, 255)"
+
+                                 )
+                      )}
 
 #We need another App Callback
     
