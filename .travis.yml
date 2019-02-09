@@ -2,7 +2,7 @@ language: python
 python:
   - "3.6"
 script:
-  - python test_Customer_Map.py
+  - python -m unittest
 deploy:
   provider: heroku
   api_key:
