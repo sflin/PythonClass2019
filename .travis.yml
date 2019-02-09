@@ -1,3 +1,8 @@
+language: python
+python:
+  - "3.6"
+script:
+  - test_Customer_Map
 deploy:
   provider: heroku
   api_key:
