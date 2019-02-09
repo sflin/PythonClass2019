@@ -36,6 +36,7 @@ for s in states:
     state_options.append({'label':str(s),
                            'value':s})
 app = dash.Dash()
+server = app.server
 
 #Add the CSS Stylesheet
 app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
