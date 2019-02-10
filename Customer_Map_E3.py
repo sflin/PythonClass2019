@@ -12,6 +12,8 @@ import dash_html_components as html
 from datetime import datetime as dt
 import dash_table
 
+PRESELECTED_STATES = ['CA', 'NY', 'TX']
+
 demographics = pd.read_csv('data/demographics.csv')
 demographics["Birthdate"] = pd.to_datetime(demographics["Birthdate"],
                                             format="%d.%m.%Y",
@@ -56,7 +58,7 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
                                                             dcc.Dropdown(id='state-picker',
                                                                           options=state_options,
                                                                           multi=True,
-                                                                          value=state_options[0])
+                                                                          value=PRESELECTED_STATES)
                                                             ),
                                                     html.H6('Join Date'),
                                                     html.P(
