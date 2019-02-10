@@ -108,6 +108,7 @@ app.layout = html.Div([html.H1('Customer Map', style={'textAlign':'center'}),
 @app.callback(
     dash.dependencies.Output('CustomerMap', 'figure'),
     [dash.dependencies.Input('gender-picker', 'values'),
+     dash.dependencies.Input('state-picker', 'value'),
      dash.dependencies.Input('date-picker-range', 'start_date'),
      dash.dependencies.Input('date-picker-range', 'end_date'),
      dash.dependencies.Input('birthdate-picker-range', 'start_date'),
